@@ -1,4 +1,4 @@
-# Case File: The Six-Pack Incident — Database Escape Room
+# The NOBE Murder Mystery: A Database Escape Room
 
 A hands-on SQL workshop where teams solve a mystery by running real SELECT, UPDATE, DELETE, and INSERT commands against a shared Supabase database.
 
