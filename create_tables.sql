@@ -1,33 +1,37 @@
--- create_tables.sql initializes the database schema for the puzzle
-
 create table suspects (
-  "letter" text,
-  "name" text,
-  "alibi_location" text,
-  "alibi_time" time,
-  "alibi_statement" text,
-  "has_alibi" boolean
+  id serial primary key,
+  team_name text not null,
+  name text,
+  letter text,
+  alibi_location text,
+  alibi_time time,
+  alibi_statement text,
+  has_alibi boolean
 );
 
 create table security_footage (
-  "location" text primary key,
-  "time_seen" time,
-  "activity" text
+  id serial primary key,
+  team_name text not null,
+  location text,
+  time_seen time,
+  activity text
 );
 
-create table polygraph_results (
-  "suspect_name" text primary key,
-  "polygraph_result" text
+create table lab_results (
+  id serial primary key,
+  team_name text not null,
+  name text,
+  polygraph_result text
 );
 
 create table envelope (
-    "is_locked" boolean,
-    "submitted_code" text
+  id serial primary key,
+  team_name text not null unique,
+  is_locked boolean default true,
+  submitted_code text
 );
 
 create table leaderboard (
-    "team_name" text primary key,
-    "finish_time" timestamp default current_timestamp
+  team_name text primary key,
+  finish_time timestamp default current_timestamp
 );
-
-

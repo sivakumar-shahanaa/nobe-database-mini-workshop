@@ -220,3 +220,6 @@ node_modules/
 supabase/
 .env
 .env.local
+
+# Supabase
+manage_tables.js
