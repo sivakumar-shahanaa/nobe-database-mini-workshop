@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NOBE Database Escape Room</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --bg-soft: #121b2d;
+        --panel: rgba(18, 27, 45, 0.9);
+        --panel-alt: rgba(12, 18, 30, 0.96);
+        --border: rgba(148, 163, 184, 0.22);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #7dd3fc;
+        --accent-strong: #38bdf8;
+        --success: #4ade80;
+        --warning: #fbbf24;
+        --danger: #f87171;
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(56, 189, 248, 0.14), transparent 28%),
+          linear-gradient(180deg, var(--bg) 0%, #090d17 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .topbar {
+        border-bottom: 1px solid var(--border);
+        background: rgba(10, 15, 25, 0.75);
+        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .topbar-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 14px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .brand {
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-size: 0.79rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 28px;
+        padding: 64px 0 32px;
+      }
+
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 0.72rem;
+        color: var(--accent);
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        line-height: 1.05;
+        margin: 0 0 18px;
+      }
+
+      h2, h3 {
+        margin-top: 0;
+      }
+
+      .lead {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.7;
+        max-width: 620px;
+      }
+
+      .cta-row {
+        margin-top: 26px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      button, input, textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        color: #06131d;
+      }
+
+      .secondary {
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .panel {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.25);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .stat {
+        background: rgba(148, 163, 184, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.35rem;
+        margin-top: 8px;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        padding: 12px 0 8px;
+      }
+
+      .card {
+        background: rgba(15, 23, 42, 0.62);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+      }
+
+      ul, ol {
+        margin: 0;
+        padding-left: 22px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      li + li { margin-top: 6px; }
+
+      .code-block {
+        background: rgba(2, 6, 23, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        color: #dbeafe;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 0.9rem;
+      }
+
+      .console {
+        margin-top: 22px;
+      }
+
+      .console-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .status {
+        font-size: 0.8rem;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: rgba(15, 23, 42, 0.55);
+      }
+
+      .status.connected {
+        color: var(--success);
+        border-color: rgba(74, 222, 128, 0.55);
+      }
+
+      .stack {
+        display: grid;
+        gap: 14px;
+      }
+
+      label {
+        display: block;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      input, textarea {
+        width: 100%;
+        background: rgba(2, 6, 23, 0.78);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--text);
+        padding: 12px 14px;
+      }
+
+      textarea {
+        min-height: 160px;
+        resize: vertical;
+      }
+
+      .query-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .query-actions .secondary {
+        background: rgba(30, 41, 59, 0.7);
+      }
+
+      .output {
+        margin-top: 18px;
+        min-height: 200px;
+        background: rgba(2, 6, 23, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        white-space: pre-wrap;
+        color: #dbeafe;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        line-height: 1.5;
+        overflow: auto;
+      }
+
+      .steps {
+        margin-top: 28px;
+        padding-bottom: 30px;
+      }
+
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .step-box {
+        background: rgba(15, 23, 42, 0.62);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 22px;
+      }
+
+      .step-box strong {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: rgba(125, 211, 252, 0.14);
+        color: var(--accent);
+        border-radius: 999px;
+        margin-bottom: 12px;
+      }
+
+      @media (max-width: 840px) {
+        .hero,
+        .card-grid,
+        .steps-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">NOBE Database Escape Room</div>
+        <div class="pill">Supabase + SQL Workshop</div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Case file</div>
+          <h1>Crack the mystery with SQL.</h1>
+          <p class="lead">
+            Teams investigate a fictional crime scene by querying a shared Supabase database,
+            checking suspect alibis, reviewing footage, testing lab results, and submitting a final answer.
+          </p>
+
+          <div class="cta-row">
+            <button class="primary" id="beginBtn">Begin Investigation</button>
+            <a class="secondary pill" href="#setup">Setup Instructions</a>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              Tables
+              <strong>5</strong>
+            </div>
+            <div class="stat">
+              Challenge
+              <strong>SQL</strong>
+            </div>
+            <div class="stat">
+              Mode
+              <strong>Team</strong>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <h3>Supabase Connection</h3>
+          <div class="stack">
+            <div>
+              <label for="supabaseUrl">Project URL</label>
+              <input id="supabaseUrl" type="text" placeholder="https://xxxxxxxxxxxx.supabase.co" />
+            </div>
+            <div>
+              <label for="supabaseKey">Anon public key</label>
+              <input id="supabaseKey" type="password" placeholder="Paste your anon key" />
+            </div>
+            <button class="primary" id="saveCredentialsBtn">Save credentials</button>
+            <div class="status" id="connectionStatus">Not connected</div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="card-grid">
+        <article class="card">
+          <h3>Workshop files</h3>
+          <ul>
+            <li><strong>create_tables.sql</strong> — creates the puzzle tables.</li>
+            <li><strong>policies.sql</strong> — allows the leaderboard to be read/written safely.</li>
+            <li><strong>run_sql_functions.sql</strong> — creates safe SQL RPC functions for the UI.</li>
+            <li><strong>index.html</strong> — the participant-facing workshop page.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Mission brief</h3>
+          <ol>
+            <li>Choose a team name and begin the case.</li>
+            <li>Query only the tables related to your team.</li>
+            <li>Use SELECT for reads and INSERT / UPDATE / DELETE for modifications.</li>
+            <li>Submit the final code after you crack the case.</li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="panel console">
+        <div class="console-header">
+          <h2>SQL Console</h2>
+          <div id="connectionStatusInline" class="status">Not connected</div>
+        </div>
+
+        <div class="stack">
+          <div>
+            <label for="teamNameInput">Team name</label>
+            <input id="teamNameInput" type="text" value="TestTeam" placeholder="e.g. Team Alpha" />
+          </div>
+
+          <div>
+            <label for="sqlInput">Query</label>
+            <textarea id="sqlInput">select * from suspects where team_name = 'TestTeam';</textarea>
+          </div>
+
+          <div class="query-actions">
+            <button class="primary" id="runSelectBtn">Run SELECT</button>
+            <button class="secondary" id="runWriteBtn">Run INSERT / UPDATE / DELETE</button>
+          </div>
+
+          <pre id="output" class="output">Waiting for a query…</pre>
+        </div>
+      </section>
+
+      <section class="steps" id="setup">
+        <h2>Setup steps</h2>
+        <div class="steps-grid">
+          <div class="step-box">
+            <strong>1</strong>
+            <h3>Create a Supabase project</h3>
+            <p>Start a fresh project for each workshop class and wait for it to finish provisioning.</p>
+          </div>
+
+          <div class="step-box">
+            <strong>2</strong>
+            <h3>Run the SQL files</h3>
+            <div class="code-block">
+create_tables.sql<br />
+policies.sql<br />
+run_sql_functions.sql
+            </div>
+          </div>
+
+          <div class="step-box">
+            <strong>3</strong>
+            <h3>Disable table RLS</h3>
+            <div class="code-block">
+alter table suspects disable row level security;<br />
+alter table security_footage disable row level security;<br />
+alter table lab_results disable row level security;<br />
+alter table envelope disable row level security;
+            </div>
+          </div>
+
+          <div class="step-box">
+            <strong>4</strong>
+            <h3>Use the page</h3>
+            <p>Paste your Supabase URL and anon key in the form above, then run SQL queries against the case tables.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const STORAGE_KEYS = {
+        url: 'nobe-supabase-url',
+        key: 'nobe-supabase-key'
+      };
+
+      const urlInput = document.getElementById('supabaseUrl');
+      const keyInput = document.getElementById('supabaseKey');
+      const teamInput = document.getElementById('teamNameInput');
+      const sqlInput = document.getElementById('sqlInput');
+      const output = document.getElementById('output');
+      const statusEl = document.getElementById('connectionStatus');
+      const statusInline = document.getElementById('connectionStatusInline');
+
+      function setStatus(text, connected = false) {
+        statusEl.textContent = text;
+        statusInline.textContent = text;
+        statusEl.classList.toggle('connected', connected);
+        statusInline.classList.toggle('connected', connected);
+      }
+
+      function readStoredValues() {
+        urlInput.value = localStorage.getItem(STORAGE_KEYS.url) || '';
+        keyInput.value = localStorage.getItem(STORAGE_KEYS.key) || '';
+      }
+
+      function saveCredentials() {
+        const url = urlInput.value.trim();
+        const key = keyInput.value.trim();
+
+        if (!url || !key) {
+          setStatus('Missing URL or anon key');
+          return;
+        }
+
+        localStorage.setItem(STORAGE_KEYS.url, url);
+        localStorage.setItem(STORAGE_KEYS.key, key);
+        setStatus('Connected', true);
+        output.textContent = 'Credentials saved. You can now run SQL queries.';
+      }
+
+      function createClient() {
+        const url = urlInput.value.trim();
+        const key = keyInput.value.trim();
+
+        if (!url || !key) {
+          setStatus('Missing Supabase credentials');
+          return null;
+        }
+
+        return window.supabase.createClient(url, key);
+      }
+
+      async function runSql(type) {
+        const client = createClient();
+        if (!client) return;
+
+        const teamName = teamInput.value.trim();
+        if (!teamName) {
+          output.textContent = 'Please enter a team name before running queries.';
+          return;
+        }
+
+        const query = sqlInput.value.trim();
+        if (!query) {
+          output.textContent = 'Please enter a SQL query first.';
+          return;
+        }
+
+        setStatus('Executing query…', true);
+
+        const rpcName = type === 'write' ? 'run_sql_write' : 'run_sql';
+
+        try {
+          const { data, error } = await client.rpc(rpcName, { sql_text: query });
+
+          if (error) {
+            output.textContent = JSON.stringify({ error: error.message }, null, 2);
+            setStatus('Query failed', false);
+            return;
+          }
+
+          output.textContent = JSON.stringify(data, null, 2);
+          setStatus('Query succeeded', true);
+        } catch (err) {
+          output.textContent = JSON.stringify({ error: String(err) }, null, 2);
+          setStatus('Connection error', false);
+        }
+      }
+
+      document.getElementById('saveCredentialsBtn').addEventListener('click', saveCredentials);
+      document.getElementById('runSelectBtn').addEventListener('click', () => runSql('select'));
+      document.getElementById('runWriteBtn').addEventListener('click', () => runSql('write'));
+      document.getElementById('beginBtn').addEventListener('click', () => {
+        const teamName = teamInput.value.trim() || 'TestTeam';
+        teamInput.value = teamName;
+        sqlInput.value = `select * from envelope where team_name = '${teamName}';`;
+        setStatus(`Investigation started for ${teamName}`, true);
+        output.textContent = `Team set to ${teamName}. Start by checking the envelope.`;
+      });
+
+      readStoredValues();
+      if (urlInput.value && keyInput.value) {
+        setStatus('Connected', true);
+      }
+    </script>
+  </body>
+</html>
